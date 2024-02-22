@@ -17,7 +17,7 @@ RUN apt-get -qq update && \
     lsb-release unixodbc unixodbc-dev odbcinst odbc-postgresql \
     texlive-latex-base texlive-extra-utils texlive-fonts-recommended \
     texlive-latex-recommended libapparmor1 libedit2 libcurl4-openssl-dev libssl-dev zlib1g-dev \
-    libbz2-dev liblzma-dev && \
+    libbz2-dev liblzma-dev nginx && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -55,9 +55,11 @@ RUN /opt/miniconda/bin/conda update -n base --yes conda \
 
 USER root
 
-#COPY service-nginx-start /etc/services.d/nginx/run
+RUN mkdir -p /etc/services.d/nginx
+
+COPY service-nginx-start /etc/services.d/nginx/run
 #COPY service-nginx-stop  /etc/services.d/nginx/finish
-#COPY proxy.conf          /etc/nginx/sites-enabled/default
+COPY proxy.conf          /etc/nginx/sites-enabled/default
 
 # ENV variables to replace conf file from Galaxy
 ENV DEBUG=false \
@@ -93,4 +95,4 @@ RUN /opt/miniconda/bin/Rscript /tmp/packages/gx.R
 
 COPY ./Rprofile.site /home/rstudio/.Rprofile
 
-EXPOSE 80
+EXPOSE 8780
