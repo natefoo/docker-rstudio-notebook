@@ -1,10 +1,11 @@
 # RStudio container used for Galaxy RStudio Integration
 
-FROM rocker/rstudio:4.4.1
+FROM rocker/rstudio:4.4
 
-ARG CONDA_VERSION=24.3.0
-ARG SUFFIX=0
+ARG CONDA_VERSION=24.11.2
+ARG SUFFIX=1
 ARG MINIFORGE_VERSION=${CONDA_VERSION}-${SUFFIX}
+ARG R_VERSION=4.4
 
 ENV CONDA_PATH=/opt/miniconda \
     MINICONDA_BIN_DIR="/opt/miniconda/bin" \
@@ -40,7 +41,7 @@ USER rstudio
 
 RUN /opt/miniconda/bin/conda update -n base --yes conda \
     && /opt/miniconda/bin/conda config --append channels bioconda \
-    && /opt/miniconda/bin/conda install --file /tmp/requirements.txt -y \
+    && /opt/miniconda/bin/conda install --file /tmp/requirements.txt r-base=${R_VERSION} -y \
     && /opt/miniconda/bin/conda clean -a
 
 USER root
