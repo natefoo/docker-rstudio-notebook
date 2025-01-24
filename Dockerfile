@@ -31,7 +31,7 @@ RUN cd /opt/ && \
     echo "conda activate base" >> "$CONDA_PATH/etc/profile.d/conda.sh" && \
     ln -s "$CONDA_PATH/etc/profile.d/conda.sh" /etc/profile.d/conda.sh && \
     echo ". $CONDA_PATH/etc/profile.d/conda.sh" >> ~/.bashrc && \
-    chmod 777 ${CONDA_PATH} -R && \
+    chown -Rh rstudio:rstudio ${CONDA_PATH} && \
     chmod 777 /tmp
 
 COPY requirements.txt /tmp/requirements.txt
@@ -51,7 +51,8 @@ RUN /opt/miniconda/bin/conda update -n base --yes conda \
     && /opt/miniconda/bin/conda install --yes conda-libmamba-solver \
     && /opt/miniconda/bin/conda config --set solver libmamba \
     && /opt/miniconda/bin/conda install --file /tmp/requirements.txt -y \
-    && /opt/miniconda/bin/conda clean -a
+    && /opt/miniconda/bin/conda clean -a \
+    && chmod 777 ${CONDA_PATH} -R
 
 USER root
 
